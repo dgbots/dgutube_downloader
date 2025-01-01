@@ -100,5 +100,16 @@ async def main():
 
 # Run the bot
 if __name__ == '__main__':
-    asyncio.run(main())
+    import asyncio
+
+if __name__ == "__main__":
+    try:
+        asyncio.run(main())
+    except RuntimeError as e:
+        if str(e) == "This event loop is already running":
+            loop = asyncio.get_event_loop()
+            loop.run_until_complete(main())
+        else:
+            raise
+
                       
