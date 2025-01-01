@@ -88,7 +88,11 @@ async def handle_format(update: Update, context: CallbackContext):
 
 # Main function to set up the bot
 async def main():
-    bot_token = "YOUR_BOT_TOKEN"
+    bot_token = os.getenv("BOT_TOKEN")
+    if not bot_token:
+        print("Error: BOT_TOKEN is not set.")
+        return
+
     app = ApplicationBuilder().token(bot_token).build()
 
     app.add_handler(CommandHandler("start", start))
@@ -96,13 +100,22 @@ async def main():
     app.add_handler(CallbackQueryHandler(handle_format))
 
     print("Bot is running...")
-    await app.run_polling()
+    await app.initialize()
+    await app.start()
+    try:
+        await asyncio.Event().wait()
+    finally:
+        await app.stop()
+        await app.shutdown()
 
-# Run the bot
-import asyncio
-
+# Entry point
 if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
-
-                      
+    try:
+        asyncio.run(main())
+    except RuntimeError as e:
+        if str(e) == "This event loop is already running":
+            loop = asyncio.get_event_loop()
+            loop.create_task(main())
+            loop.run_forever()
+        else:
+            raise
