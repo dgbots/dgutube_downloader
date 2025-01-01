@@ -88,7 +88,7 @@ async def handle_format(update: Update, context: CallbackContext):
 
 # Main function to set up the bot
 async def main():
-    bot_token = "YOUR_BOT_TOKEN"
+    bot_token = "7534166115:AAElBFTqf4BKN7CqtUlr1pvSQsYuZzl3t78"
     app = ApplicationBuilder().token(bot_token).build()
 
     app.add_handler(CommandHandler("start", start))
